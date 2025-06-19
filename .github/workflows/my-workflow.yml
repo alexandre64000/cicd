@@ -16,6 +16,22 @@ jobs:
   install:
     runs-on: ubuntu-latest
 
+        # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
     steps:
     - name: Checkout repository
       uses: actions/checkout@v4
@@ -30,6 +46,12 @@ jobs:
 
     - name: Build app
       run: npm run build
+      
+      env:
+          # The hostname used to communicate with the PostgreSQL service container
+        POSTGRES_HOST: postgres
+          # The default PostgreSQL port
+        POSTGRES_PORT: 5432
 
     - name: Test app
       if: ${{ github.event.inputs.run_test == 'true' || github.event_name == 'pull_request' }}
