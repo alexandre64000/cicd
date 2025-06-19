@@ -2,6 +2,12 @@ name: Manual install
 
 on:
   workflow_dispatch:
+    inputs:
+      run_test:
+        description: 'Run test'
+        required: true
+        default: 'false'
+        type: boolean
 
 jobs:
   install:
